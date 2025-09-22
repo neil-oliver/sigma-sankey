@@ -212,7 +212,7 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
     if (chartInstance.current) {
       chartInstance.current.resize();
     }
-  }, [settings.layout.heightMode]);
+  }, []);
 
   // Set up resize observer for responsive height
   useEffect(() => {
