@@ -8,14 +8,13 @@ A feature-rich Sankey diagram plugin for Sigma Computing, built with React, Type
 - **Interactive Sankey Diagrams**: Create beautiful flow diagrams showing relationships between source and target nodes
 - **Dynamic Data Processing**: Transform Sigma data into Sankey format with automatic aggregation
 - **Real-time Validation**: Comprehensive data validation with helpful error messages
-- **Performance Optimized**: Handles large datasets efficiently with progress indicators
+- **Performance Optimized**: Handles large datasets efficiently
 
 ### Customization Options
 
 #### Node Settings
-- Adjustable node width and padding
+- Adjustable node width
 - Configurable node alignment (left, right, justify)
-- Draggable nodes for interactive exploration
 - Customizable labels with positioning and styling options
 
 #### Link Settings
@@ -34,18 +33,11 @@ A feature-rich Sankey diagram plugin for Sigma Computing, built with React, Type
 - Hover effects with adjacency highlighting
 - Configurable tooltips with custom formatting
 - Click events for nodes and links
-- Keyboard shortcuts for quick access
-
-### Export Capabilities
-- **PNG Export**: High-resolution bitmap images for presentations
-- **SVG Export**: Vector graphics for editing and scaling
-- **Custom Settings**: Configurable filenames and background colors
-- **Keyboard Shortcuts**: Ctrl/Cmd+E for PNG, Ctrl/Cmd+Shift+E for SVG
+- Keyboard shortcuts for settings access
 
 ### Advanced Features
 - **Error Boundary**: Graceful error handling with user-friendly messages
-- **Performance Monitoring**: Automatic detection and handling of large datasets
-- **Theme Integration**: Works seamlessly with Sigma's light/dark themes
+- **Data Validation**: Automatic detection and validation of data issues
 - **Settings Persistence**: All customizations saved to Sigma configuration
 
 ## Data Requirements
@@ -55,55 +47,41 @@ The plugin requires three columns from your Sigma data source:
 1. **Source Column**: Contains the source node names
 2. **Target Column**: Contains the target node names  
 3. **Value Column**: Contains the numeric flow values between nodes
+4. **ID Column (Optional)**: Contains unique identifiers for link selection functionality
 
 ## Getting Started
 
 1. Add this plugin to your Sigma Computing workbook
 2. Select a data source from your workbook
-3. Configure the three required columns (Source, Target, Value)
+3. Configure the required columns (Source, Target, Value, and optionally ID)
 4. Customize the appearance using the comprehensive settings panel
-5. Export your diagrams in PNG or SVG format
 
 ## Settings Categories
 
-### General
-- Chart title configuration
-- Basic display options
-
-### Styling  
-- Theme selection (light/dark/custom)
-- Custom color palettes
-- Dynamic theming options
-
 ### Nodes
-- Dimensions and spacing
-- Label configuration
-- Interaction settings
+- Width configuration
+- Label display and positioning
+- Font size and styling options
 
 ### Links
-- Appearance and curvature
-- Color modes and gradients
+- Curveness and appearance
+- Color modes: gradient, source-based, target-based, custom
 - Opacity controls
 
 ### Layout
-- Orientation and alignment
-- Spacing and iterations
-- Advanced positioning
+- Orientation (horizontal/vertical)
+- Node alignment (left, right, justify)
+- Height mode (responsive/fixed)
+- Spacing controls (node gap, level gap)
+- Layout iterations for optimization
 
 ### Interaction
-- Tooltip configuration
-- Hover effects
-- Animation settings
-
-### Export
-- Format options (PNG/SVG)
-- File naming and backgrounds
-- Export permissions
+- Tooltip configuration and formatting
+- Hover effects and focus modes
+- Animation settings (enable/disable, duration)
 
 ## Keyboard Shortcuts
 
-- `Ctrl/Cmd + E`: Export as PNG
-- `Ctrl/Cmd + Shift + E`: Export as SVG  
 - `Ctrl/Cmd + ,`: Open settings
 
 ## Technical Details
