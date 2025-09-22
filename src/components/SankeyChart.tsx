@@ -49,9 +49,13 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<ECharts | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const isFirstRender = useRef<boolean>(true);
 
   // Create ECharts option from settings and data - memoized to prevent unnecessary recreations
   const chartOption = useMemo(() => {
+    // Only enable animations on the first render, not on subsequent updates
+    const shouldAnimate = settings.animation.enabled && isFirstRender.current;
+    
     return {
       tooltip: {
         show: settings.tooltip.show,
@@ -64,8 +68,8 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
           fontSize: settings.tooltip.textStyle.fontSize,
         },
       },
-      animation: settings.animation.enabled,
-      animationDuration: settings.animation.duration,
+      animation: shouldAnimate,
+      animationDuration: shouldAnimate ? settings.animation.duration : 0,
       animationEasing: settings.animation.easing as any,
       series: [
         {
@@ -181,6 +185,9 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
       if (onChartReady) {
         onChartReady(chartInstance.current);
       }
+
+      // Mark first render as complete to disable animations on future updates
+      isFirstRender.current = false;
     } catch (err) {
       console.error('Error initializing Sankey chart:', err);
       setError(err instanceof Error ? err.message : 'Failed to initialize chart');
