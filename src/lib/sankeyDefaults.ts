@@ -32,7 +32,7 @@ export const DEFAULT_SANKEY_SETTINGS: SankeySettings = {
   },
   layout: {
     orient: 'horizontal',
-    nodeAlign: 'justify',
+    nodeAlign: 'left',
     iterations: 32,
     nodeGap: 8,
     levelGap: 20,
