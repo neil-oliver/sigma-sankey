@@ -77,33 +77,33 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
             name: node.name,
             value: node.value,
             itemStyle: {
-              color: node.itemStyle?.color || generateNodeColor(index, data.nodes.length),
-              borderColor: node.itemStyle?.borderColor || settings.nodes.itemStyle.borderColor,
-              borderWidth: node.itemStyle?.borderWidth || settings.nodes.itemStyle.borderWidth,
+              color: generateNodeColor(index, data.nodes.length),
+              borderColor: settings.nodes.itemStyle.borderColor,
+              borderWidth: settings.nodes.itemStyle.borderWidth,
             },
             label: {
-              show: node.label?.show !== false && settings.nodes.label.show,
-              position: node.label?.position || settings.nodes.label.position,
-              distance: node.label?.distance || settings.nodes.label.distance,
-              rotate: node.label?.rotate || settings.nodes.label.rotate,
-              fontSize: node.label?.fontSize || settings.nodes.label.fontSize,
-              fontWeight: node.label?.fontWeight || settings.nodes.label.fontWeight,
-              color: node.label?.color || settings.nodes.label.color,
+              show: settings.nodes.label.show,
+              position: settings.nodes.label.position,
+              distance: settings.nodes.label.distance,
+              rotate: settings.nodes.label.rotate,
+              fontSize: settings.nodes.label.fontSize,
+              fontWeight: settings.nodes.label.fontWeight,
+              color: settings.nodes.label.color,
             },
           })),
           links: data.links.map((link) => {
             // For gradient mode, don't set individual link colors - let series lineStyle handle it
             const linkLineStyle: any = {
-              width: link.lineStyle?.width || settings.links.lineStyle.width,
-              opacity: link.lineStyle?.opacity || settings.links.opacity,
-              curveness: link.lineStyle?.curveness || settings.links.curveness,
+              width: settings.links.lineStyle.width,
+              opacity: settings.links.opacity,
+              curveness: settings.links.curveness,
             };
             
             // Only set color for non-gradient modes
             if (settings.links.colorMode !== 'gradient') {
               linkLineStyle.color = settings.links.colorMode === 'source' ? 'source' :
                                    settings.links.colorMode === 'target' ? 'target' :
-                                   link.lineStyle?.color || settings.links.lineStyle.color;
+                                   settings.links.lineStyle.color;
             }
             
             return {

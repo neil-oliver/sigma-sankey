@@ -109,32 +109,12 @@ export interface SankeyNode {
   name: string;
   value?: number;
   depth?: number;
-  label?: {
-    show?: boolean;
-    position?: 'left' | 'right' | 'top' | 'bottom' | 'inside';
-    distance?: number;
-    rotate?: number;
-    fontSize?: number;
-    fontWeight?: 'normal' | 'bold';
-    color?: string;
-  };
-  itemStyle?: {
-    color?: string;
-    borderColor?: string;
-    borderWidth?: number;
-  };
 }
 
 export interface SankeyLink {
   source: string | number;
   target: string | number;
   value: number;
-  lineStyle?: {
-    color?: string;
-    width?: number;
-    opacity?: number;
-    curveness?: number;
-  };
 }
 
 export interface SankeyChartData {
