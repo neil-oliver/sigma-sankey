@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { client, useConfig, useElementData, useElementColumns } from '@sigmacomputing/plugin';
+import { client, useConfig, useElementData, useElementColumns, useVariable } from '@sigmacomputing/plugin';
 import { Button } from './components/ui/button';
 import { Settings as SettingsIcon, AlertCircle } from 'lucide-react';
 import Settings, { DEFAULT_SETTINGS } from './Settings';
@@ -23,16 +23,17 @@ client.config.configureEditorPanel([
   { name: 'sourceColumn', type: 'column', source: 'source', allowMultiple: false, label: 'Source Column' },
   { name: 'targetColumn', type: 'column', source: 'source', allowMultiple: false, label: 'Target Column' },
   { name: 'valueColumn', type: 'column', source: 'source', allowMultiple: false, label: 'Value Column' },
+  { name: 'idColumn', type: 'column', source: 'source', allowMultiple: false, label: 'ID Column (Optional)' },
+  { name: 'selectedID', type: 'variable', label: 'Selected ID Control' },
   { name: 'config', type: 'text', label: 'Settings Config (JSON)', defaultValue: "{}" },
   { name: 'editMode', type: 'toggle', label: 'Edit Mode' }
 ]);
-
-
 
 const App: React.FC = (): React.JSX.Element => {
   const config: SigmaConfig = useConfig();
   const sigmaData: SigmaData = useElementData(config.source || '');
   const columns = useElementColumns(config.source || '');
+  const [, setSelectedID] = useVariable(config.selectedID!);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [settings, setSettings] = useState<PluginSettings>(DEFAULT_SETTINGS);
 
@@ -100,7 +101,8 @@ const App: React.FC = (): React.JSX.Element => {
         sigmaData, 
         config.sourceColumn, 
         config.targetColumn, 
-        config.valueColumn
+        config.valueColumn,
+        config.idColumn
       );
 
       // Aggregate duplicate links
@@ -114,7 +116,7 @@ const App: React.FC = (): React.JSX.Element => {
       console.error('Error processing Sankey data:', error);
       return { nodes: [], links: [] };
     }
-  }, [sigmaData, config.sourceColumn, config.targetColumn, config.valueColumn]);
+  }, [sigmaData, config.sourceColumn, config.targetColumn, config.valueColumn, config.idColumn]);
 
   // Validate Sankey data - but only when we have attempted to load data
   const dataValidation = useMemo(() => {
@@ -199,7 +201,8 @@ const App: React.FC = (): React.JSX.Element => {
             Please select the following columns: {missingColumns.join(', ')}
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Sankey charts require source, target, and value columns to display flow relationships.
+            Sankey charts require source, target, and value columns to display flow relationships. 
+            The ID column is optional but recommended for link selection functionality.
           </p>
         </div>
       </div>
@@ -286,7 +289,6 @@ const App: React.FC = (): React.JSX.Element => {
                 data={sankeyData}
                 settings={settings.sankey || DEFAULT_SANKEY_SETTINGS}
                 width="100%"
-                height="100%"
                 onNodeClick={(params) => {
                   console.log('Node clicked:', params);
                   // Could be extended to show detailed node information
@@ -294,6 +296,10 @@ const App: React.FC = (): React.JSX.Element => {
                 }}
                 onLinkClick={(params) => {
                   console.log('Link clicked:', params);
+                  // Set the selected ID variable if we have an ID and the link has an ID
+                  if (setSelectedID && params?.data?.id) {
+                    setSelectedID(params.data.id);
+                  }
                   // Could be extended to show detailed link information
                   // or trigger filtering/highlighting actions
                 }}

@@ -4,6 +4,8 @@ export interface SigmaConfig {
   sourceColumn?: string;
   targetColumn?: string;
   valueColumn?: string;
+  idColumn?: string;
+  selectedID?: string;
   config?: string;
   editMode?: boolean;
 }
@@ -51,6 +53,8 @@ export interface SankeyLayoutSettings {
   iterations: number;
   nodeGap: number;
   levelGap: number;
+  heightMode: 'responsive' | 'fixed';
+  customHeight: number;
 }
 
 export interface SankeyTooltipSettings {
@@ -115,6 +119,7 @@ export interface SankeyLink {
   source: string | number;
   target: string | number;
   value: number;
+  id?: string | number;
 }
 
 export interface SankeyChartData {

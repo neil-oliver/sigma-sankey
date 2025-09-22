@@ -6,13 +6,15 @@ import { SigmaData, SankeyChartData, SankeyNode, SankeyLink } from '../types/sig
  * @param sourceColumn - Column name for source nodes
  * @param targetColumn - Column name for target nodes  
  * @param valueColumn - Column name for flow values
+ * @param idColumn - Column name for link IDs (optional)
  * @returns Formatted data for ECharts Sankey chart
  */
 export function transformSigmaDataToSankey(
   sigmaData: SigmaData,
   sourceColumn: string,
   targetColumn: string,
-  valueColumn: string
+  valueColumn: string,
+  idColumn?: string
 ): SankeyChartData {
   if (!sigmaData || !sourceColumn || !targetColumn || !valueColumn) {
     return { nodes: [], links: [] };
@@ -21,9 +23,15 @@ export function transformSigmaDataToSankey(
   const sourceData = sigmaData[sourceColumn] || [];
   const targetData = sigmaData[targetColumn] || [];
   const valueData = sigmaData[valueColumn] || [];
+  const idData = idColumn ? sigmaData[idColumn] || [] : [];
 
   if (sourceData.length !== targetData.length || sourceData.length !== valueData.length) {
     console.error('Sankey data columns must have equal length');
+    return { nodes: [], links: [] };
+  }
+
+  if (idColumn && idData.length !== sourceData.length) {
+    console.error('ID column must have the same length as other columns');
     return { nodes: [], links: [] };
   }
 
@@ -36,6 +44,7 @@ export function transformSigmaDataToSankey(
     const source = String(sourceData[i] || '').trim();
     const target = String(targetData[i] || '').trim();
     const value = Number(valueData[i]) || 0;
+    const id = idColumn ? String(idData[i] || '') : undefined;
 
     // Skip invalid rows
     if (!source || !target || value <= 0) {
@@ -46,12 +55,18 @@ export function transformSigmaDataToSankey(
     nodeNames.add(source);
     nodeNames.add(target);
 
-    // Add link
-    links.push({
+    // Add link with optional ID
+    const link: SankeyLink = {
       source: source,
       target: target,
       value: value
-    });
+    };
+
+    if (id) {
+      link.id = id;
+    }
+
+    links.push(link);
   }
 
   // Convert node names to node objects - let ECharts calculate node values automatically from links

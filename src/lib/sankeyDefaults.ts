@@ -36,6 +36,8 @@ export const DEFAULT_SANKEY_SETTINGS: SankeySettings = {
     iterations: 32,
     nodeGap: 8,
     levelGap: 20,
+    heightMode: 'responsive',
+    customHeight: 600,
   },
   tooltip: {
     show: true,

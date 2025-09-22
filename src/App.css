@@ -30,12 +30,7 @@
   background: hsl(var(--foreground));
 }
 
-/* Responsive chart container */
-@media (max-width: 768px) {
-  .sankey-chart-container {
-    min-height: 400px;
-  }
-}
+/* Responsive chart container - no minimum height constraints */
 
 /* Print styles for exported content */
 @media print {

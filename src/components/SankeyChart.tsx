@@ -8,7 +8,6 @@ interface SankeyChartProps {
   data: SankeyChartData;
   settings: SankeySettings;
   width?: number | string;
-  height?: number | string;
   onChartReady?: (chart: ECharts) => void;
   onNodeClick?: (params: any) => void;
   onLinkClick?: (params: any) => void;
@@ -43,7 +42,6 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
   data,
   settings = DEFAULT_SANKEY_SETTINGS,
   width = '100%',
-  height = '600px',
   onChartReady,
   onNodeClick,
   onLinkClick,
@@ -88,7 +86,6 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
               rotate: settings.nodes.label.rotate,
               fontSize: settings.nodes.label.fontSize,
               fontWeight: settings.nodes.label.fontWeight,
-              color: settings.nodes.label.color,
             },
           })),
           links: data.links.map((link) => {
@@ -106,12 +103,19 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
                                    settings.links.lineStyle.color;
             }
             
-            return {
+            const linkData: any = {
               source: link.source,
               target: link.target,
               value: link.value,
               lineStyle: linkLineStyle,
             };
+
+            // Include ID if available
+            if (link.id) {
+              linkData.id = link.id;
+            }
+
+            return linkData;
           }),
           emphasis: {
             focus: settings.interaction.emphasis.focus,
@@ -190,12 +194,52 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
     }
   }, [data, settings, initChart]); // Fixed: include initChart in dependencies for proper updates
 
-  // Handle resize
+  // Calculate height based on settings
+  const getChartHeight = useCallback((): string | number => {
+    const { heightMode, customHeight } = settings.layout;
+    
+    switch (heightMode) {
+      case 'fixed':
+        return `${customHeight}px`;
+      case 'responsive':
+      default:
+        return '100%';
+    }
+  }, [settings.layout]);
+
+  // Handle resize and responsive height changes
   const handleResize = useCallback(() => {
     if (chartInstance.current) {
       chartInstance.current.resize();
     }
-  }, []);
+  }, [settings.layout.heightMode]);
+
+  // Set up resize observer for responsive height
+  useEffect(() => {
+    if (settings.layout.heightMode === 'responsive' && chartRef.current) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        // Debounce resize events to avoid excessive calls
+        setTimeout(() => {
+          if (chartInstance.current) {
+            chartInstance.current.resize();
+          }
+        }, 50);
+      });
+
+      // Observe the chart container itself
+      resizeObserver.observe(chartRef.current);
+      
+      // Also observe the parent container for better responsiveness
+      const parentElement = chartRef.current.parentElement;
+      if (parentElement) {
+        resizeObserver.observe(parentElement);
+      }
+      
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [settings.layout.heightMode]);
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -220,7 +264,7 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px] bg-red-50 border border-red-200 rounded-lg">
+      <div className="flex items-center justify-center h-full bg-red-50 border border-red-200 rounded-lg">
         <div className="text-center p-6">
           <div className="text-red-600 text-lg font-medium mb-2">Chart Error</div>
           <div className="text-red-500 text-sm">{error}</div>
@@ -230,13 +274,12 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full h-full">
       <div 
         ref={chartRef} 
         style={{ 
           width: width, 
-          height: height,
-          minHeight: '400px'
+          height: getChartHeight()
         }}
         className="sankey-chart-container"
       />

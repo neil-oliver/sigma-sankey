@@ -102,6 +102,11 @@ const Settings: React.FC<SettingsProps> = ({
       errors.push('Animation duration must be between 0 and 5000ms');
     }
     
+    // Validate height settings
+    if (settings.sankey?.layout.customHeight && (settings.sankey.layout.customHeight < 200 || settings.sankey.layout.customHeight > 2000)) {
+      errors.push('Fixed height must be between 200 and 2000 pixels');
+    }
+    
     return { isValid: errors.length === 0, errors };
   };
 
@@ -421,6 +426,63 @@ const Settings: React.FC<SettingsProps> = ({
                     <option value="justify">Justify</option>
                   </select>
                 </div>
+              </div>
+            </div>
+
+            {/* Height Settings */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-medium">Height Settings</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="heightMode">Height Mode</Label>
+                  <select
+                    id="heightMode"
+                    value={tempSettings.sankey?.layout.heightMode || DEFAULT_SANKEY_SETTINGS.layout.heightMode}
+                    onChange={(e) => setTempSettings(prev => ({
+                      ...prev,
+                      sankey: {
+                        ...prev.sankey!,
+                        layout: {
+                          ...prev.sankey!.layout,
+                          heightMode: e.target.value as any
+                        }
+                      }
+                    }))}
+                    className="block w-full border rounded px-3 py-2 text-sm bg-background text-foreground"
+                  >
+                    <option value="responsive">Responsive</option>
+                    <option value="fixed">Fixed Height</option>
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    Responsive adapts to container size
+                  </p>
+                </div>
+                
+                {tempSettings.sankey?.layout.heightMode === 'fixed' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="customHeight">Fixed Height (px)</Label>
+                    <Input
+                      id="customHeight"
+                      type="number"
+                      min="200"
+                      max="2000"
+                      value={tempSettings.sankey?.layout.customHeight || DEFAULT_SANKEY_SETTINGS.layout.customHeight}
+                      onChange={(e) => setTempSettings(prev => ({
+                        ...prev,
+                        sankey: {
+                          ...prev.sankey!,
+                          layout: {
+                            ...prev.sankey!.layout,
+                            customHeight: parseInt(e.target.value) || DEFAULT_SANKEY_SETTINGS.layout.customHeight
+                          }
+                        }
+                      }))}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Height in pixels (200-2000)
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
