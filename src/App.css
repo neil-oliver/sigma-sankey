@@ -1,0 +1,46 @@
+/* Sankey Chart Plugin Styles */
+
+/* Custom styles for the Sankey chart component */
+.sankey-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure smooth animations for chart interactions */
+.sankey-chart-container canvas {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for settings modal */
+.sankey-settings-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sankey-settings-modal::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+.sankey-settings-modal::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+.sankey-settings-modal::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground));
+}
+
+/* Responsive chart container */
+@media (max-width: 768px) {
+  .sankey-chart-container {
+    min-height: 400px;
+  }
+}
+
+/* Print styles for exported content */
+@media print {
+  .sankey-chart-container {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
