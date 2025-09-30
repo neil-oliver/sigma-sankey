@@ -606,10 +606,10 @@ const Settings: React.FC<SettingsProps> = ({
                           }
                         }
                       }))}
-                      placeholder="{b} : {c}"
+                      placeholder="Source: {data.source} → Target: {data.target}<br/>Value: {data.value}<br/>ID: {data.id}"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Use {"{b}"} for node name, {"{c}"} for value
+                      Available variables: {"{data.source}"}, {"{data.target}"}, {"{data.value}"}, {"{data.id}"}
                     </p>
                   </div>
                 </div>

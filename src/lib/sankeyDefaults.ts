@@ -42,7 +42,7 @@ export const DEFAULT_SANKEY_SETTINGS: SankeySettings = {
   tooltip: {
     show: true,
     trigger: 'item',
-    formatter: '{b} : {c}',
+    formatter: '{data.source} → {data.target}: {data.value}',
     backgroundColor: 'rgba(50,50,50,0.7)',
     borderColor: '#333',
     textStyle: {
