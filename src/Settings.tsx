@@ -5,6 +5,7 @@ import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import { PluginSettings } from './types/sigma';
 import { DEFAULT_SANKEY_SETTINGS } from './lib/sankeyDefaults';
+import { validateTooltipTemplate, migrateTooltipTemplate } from './lib/tooltipFormatter';
 
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -132,6 +133,25 @@ const Settings: React.FC<SettingsProps> = ({
     setTempSettings(currentSettings);
     onClose();
   }, [currentSettings, onClose]);
+
+  // Helper function to migrate tooltip template
+  const handleMigrateTooltip = useCallback((): void => {
+    const currentFormatter = tempSettings.sankey?.tooltip.formatter || DEFAULT_SANKEY_SETTINGS.tooltip.formatter;
+    const migratedFormatter = migrateTooltipTemplate(currentFormatter);
+    
+    if (migratedFormatter !== currentFormatter) {
+      setTempSettings(prev => ({
+        ...prev,
+        sankey: {
+          ...prev.sankey!,
+          tooltip: {
+            ...prev.sankey!.tooltip,
+            formatter: migratedFormatter
+          }
+        }
+      }));
+    }
+  }, [tempSettings]);
 
 
 
@@ -606,11 +626,47 @@ const Settings: React.FC<SettingsProps> = ({
                           }
                         }
                       }))}
-                      placeholder="Source: {data.source} → Target: {data.target}<br/>Value: {data.value}<br/>ID: {data.id}"
+                      placeholder="Source: {source} → Target: {target}<br/>Value: {value}<br/>ID: {id}"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Available variables: {"{data.source}"}, {"{data.target}"}, {"{data.value}"}, {"{data.id}"}
+                      Available variables: {"{source}"}, {"{target}"}, {"{value}"}, {"{id}"}, {"{name}"}
                     </p>
+                    
+                    {/* Template validation and migration */}
+                    {(() => {
+                      const currentFormatter = tempSettings.sankey?.tooltip.formatter || DEFAULT_SANKEY_SETTINGS.tooltip.formatter;
+                      const validation = validateTooltipTemplate(currentFormatter);
+                      const needsMigration = currentFormatter.includes('{data.');
+                      
+                      return (
+                        <>
+                          {validation.warnings.length > 0 && (
+                            <div className="text-xs text-amber-600 space-y-1">
+                              {validation.warnings.map((warning, index) => (
+                                <div key={index}>⚠️ {warning}</div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {needsMigration && (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={handleMigrateTooltip}
+                                className="text-xs"
+                              >
+                                Migrate Template
+                              </Button>
+                              <span className="text-xs text-muted-foreground">
+                                Remove {"{data.}"} prefixes for cleaner syntax
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               )}

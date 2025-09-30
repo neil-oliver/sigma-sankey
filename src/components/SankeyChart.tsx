@@ -3,6 +3,7 @@ import * as echarts from 'echarts';
 import type { ECharts } from 'echarts';
 import { SankeyChartData, SankeySettings } from '../types/sigma';
 import { DEFAULT_SANKEY_SETTINGS } from '../lib/sankeyDefaults';
+import { createTooltipFormatter } from '../lib/tooltipFormatter';
 
 interface SankeyChartProps {
   data: SankeyChartData;
@@ -60,7 +61,7 @@ const SankeyChart = forwardRef<SankeyChartRef, SankeyChartProps>(({
       tooltip: {
         show: settings.tooltip.show,
         trigger: settings.tooltip.trigger,
-        formatter: settings.tooltip.formatter,
+        formatter: createTooltipFormatter(settings.tooltip.formatter),
         backgroundColor: settings.tooltip.backgroundColor,
         borderColor: settings.tooltip.borderColor,
         textStyle: {
