@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { client, useConfig, useElementData, useElementColumns, useVariable } from '@sigmacomputing/plugin';
 import { Button } from './components/ui/button';
-import { Settings as SettingsIcon, AlertCircle } from 'lucide-react';
+import { Settings as SettingsIcon, AlertCircle, ChevronDown } from 'lucide-react';
 import Settings, { DEFAULT_SETTINGS } from './Settings';
 import SankeyChart from './components/SankeyChart';
 import SankeyIcon from './components/icons/SankeyIcon';
@@ -390,9 +390,7 @@ const App: React.FC = (): React.JSX.Element => {
 
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-sm text-muted-foreground">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15l2-2m0 0l2-2m-2 2l-2-2m2 2v6" />
-              </svg>
+              <ChevronDown className="w-4 h-4" />
               Select columns in the configuration panel to continue
             </div>
           </div>
